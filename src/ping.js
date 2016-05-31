@@ -47,7 +47,7 @@ Strophe.addConnectionPlugin('ping', {
    * @return {int} A reference to the handler that can be used to remove it.
    */
   addHandler(handler) {
-    handler = handler || ping => this.pong(ping);
+    handler = handler || request => this.respond(request);
     return this._c.addHandler(handler, Strophe.NS.PING, 'iq', 'get');
   }
 });
