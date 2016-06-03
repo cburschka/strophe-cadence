@@ -55,7 +55,7 @@ Strophe.addConnectionPlugin('time', {
    * @return A reference to the handler that can be used to remove it.
    */
   addHandler(handler) {
-    handler = handler || request => this.respond(request);
+    handler = handler || (request => this.respond(request));
     return this._c.addHandler(handler, Strophe.NS.TIME, 'iq', 'get');
   }
 });

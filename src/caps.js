@@ -48,7 +48,9 @@
       identities = Array.from(identities);
       features = Array.from(features || this._c.disco.features).sort();
       ['category', 'type', 'lang'].forEach(prop => identities.sort(cmpProp(prop)));
-      const idstrings = identities.map({category, type, lang, name} => [category,type,lang,name].join('/'))
+      const idstrings = identities.map(
+        ({category, type, lang, name}) => [category,type,lang,name].join('/')
+      );
       return idstrings.join('<') + '<' + features.map(String).join('<') + '<';
     }
   });

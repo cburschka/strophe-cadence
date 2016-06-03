@@ -19,7 +19,7 @@ Strophe.addConnectionPlugin('disco', {
   },
 
   removeIdentity(_category, _type, _name, _lang) {
-    const index = this.identities.findIndex({category, type, name, lang} => (
+    const index = this.identities.findIndex(({category, type, name, lang}) => (
       category == _category && name == _name && type == _type && lang == _lang
     ));
     if (~index) delete this.identities[index];
@@ -80,12 +80,12 @@ Strophe.addConnectionPlugin('disco', {
   },
 
   addInfoHandler(handler) {
-    handler = handler || request => this.respond(request);
+    handler = handler || (request => this.respond(request));
     return this._c.addHandler(handler, Strophe.NS.DISCO_INFO, 'iq', 'get');
   },
 
   addItemHandler(handler) {
-    handler = handler || request => this.respond(request);
+    handler = handler || (request => this.respond(request));
     return this._c.addHandler(handler, Strophe.NS.DISCO_ITEMS, 'iq', 'get');
   }
 });

@@ -33,7 +33,7 @@ Strophe.addConnectionPlugin('ping', {
    */
   respond(request) {
     this._c.sendIQ($iq({
-      id: request.getAttribute('id')
+      id: request.getAttribute('id'),
       to: request.getAttribute('from'),
       type: 'result',
     }));
@@ -47,7 +47,7 @@ Strophe.addConnectionPlugin('ping', {
    * @return {int} A reference to the handler that can be used to remove it.
    */
   addHandler(handler) {
-    handler = handler || request => this.respond(request);
+    handler = handler || (request => this.respond(request));
     return this._c.addHandler(handler, Strophe.NS.PING, 'iq', 'get');
   }
 });
