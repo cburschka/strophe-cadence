@@ -40,21 +40,22 @@ Strophe.addConnectionPlugin('disco', {
   },
 
   removeItem(_jid) {
-    const index = this.items.findIndex({jid} => jid == _jid);
+    const index = this.items.findIndex(({jid}) => jid == _jid);
     if (~index) delete this.items[index];
   },
 
-  queryInfo(to, timeout) {
+  queryInfo(to, {timeout}) {
     const id = this._c.getUniqueId('disco#info');
     const iq = $iq({id, to, type: 'get'});
     iq.c('query', {xmlns: Strophe.NS.DISCO_INFO});
     return new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
   },
 
-  queryItems(to, timeout) {
-    const id = this._c.getUniqueId('disco#info');
+  queryItems(to, {node, timeout}) {
+    const id = this._c.getUniqueId('disco#items');
     const iq = $iq({id, to, type: 'get'});
     iq.c('query', {xmlns: Strophe.NS.DISCO_ITEMS});
+    if (node) iq.attr({node});
     return new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
   },
 
