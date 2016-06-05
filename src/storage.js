@@ -41,14 +41,12 @@ Strophe.addConnectionPlugin('storage', {
    *
    * @return {Promise} A promise that resolves to the response stanza.
    */
-  set(root, namespace, data, timeout) {
+  set(root, namespace) {
     const id = this._c.getUniqueId('storage');
     const iq = $iq({id, type: 'set'});
     iq.c('query', {xmlns: Strophe.NS.STORAGE});
     iq.c(element, {xmlns: namespace});
-
-    Array.concat(data).forEach(node => iq.cnode(node).up());
-
-    return new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
+    iq.send = timeout => new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
+    return iq;
   }
 });
