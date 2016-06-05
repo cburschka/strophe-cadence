@@ -37,6 +37,7 @@ Strophe.addConnectionPlugin('ping', {
       to: request.getAttribute('from'),
       type: 'result',
     }));
+    return true;
   },
 
   /**
