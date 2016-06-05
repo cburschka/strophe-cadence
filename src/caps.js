@@ -37,6 +37,7 @@
       disco = disco || this._c.disco;
       const {identities} = disco;
       const [identity={name:defaultNode}] = identities;
+      const node = identity.name;
       const ver = SHA1.b64_sha1(this.ver(disco));
       return $build('c', {node, ver, hash: 'sha-1', xmlns: Strophe.NS.CAPS});
     },

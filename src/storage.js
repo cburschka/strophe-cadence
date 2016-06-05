@@ -45,7 +45,7 @@ Strophe.addConnectionPlugin('storage', {
     const id = this._c.getUniqueId('storage');
     const iq = $iq({id, type: 'set'});
     iq.c('query', {xmlns: Strophe.NS.STORAGE});
-    iq.c(element, {xmlns: namespace});
+    iq.c(root, {xmlns: namespace});
     iq.send = timeout => new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
     return iq;
   }
