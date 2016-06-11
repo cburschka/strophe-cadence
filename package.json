@@ -1,0 +1,29 @@
+{
+  "name": "strophe-cadence",
+  "version": "0.0.3",
+  "description": "Strophe plugins used in the cadence client.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cburschka/strophe-cadence.git"
+  },
+  "keywords": [
+    "strophe",
+    "cadence",
+    "xmpp",
+    "library",
+    "plugins"
+  ],
+  "author": "Christoph Burschka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cburschka/strophe-cadence/issues"
+  },
+  "homepage": "https://github.com/cburschka/strophe-cadence#readme",
+  "devDependencies": {
+    "strophe": "^1.2.4"
+  }
+}
