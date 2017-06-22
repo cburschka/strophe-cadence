@@ -16,7 +16,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     /**
      * List the available command nodes on a component.
      *
-     * @param {JID} to
+     * @param {String} to
      * @param {int} timeout (optional)
      *
      * @return {Promise}
@@ -28,7 +28,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     /**
      * Execute a command node.
      *
-     * @param {JID} to
+     * @param {String} to
      * @param {String} node
      * @param {int} timeout (optional)
      *
@@ -43,9 +43,9 @@ define(['strophe.js'], ({Strophe, $iq}) => {
 
     /**
      *
-     * @param {JID} to
+     * @param {String} to
      * @param {String} node
-     * @param {DOM} data (optional)
+     * @param {Object} data (optional)
      * @param {int} timeout (optional)
      *
      * @return {Promise}

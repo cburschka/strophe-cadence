@@ -5,8 +5,8 @@
  * The disco plugin is recommended.
  */
 
-define(['strophe.js'], ({Strophe, $build}) => {
-  const cmp = (a, b) => (a != b) * (1 - 2*(a < b));
+define(['strophe.js'], ({Strophe, SHA1, $build}) => {
+  const cmp = (a, b) => (a !== b) * (1 - 2 * (a < b));
   const cmpProp = prop => (a, b) => cmp(a[prop], b[prop]);
   const defaultNode = 'https://github.com/cburschka/strophe-cadence';
 
@@ -33,10 +33,9 @@ define(['strophe.js'], ({Strophe, $build}) => {
     /**
      * Create a caps element.
      */
-    createCapsNode(disco) {
-      disco = disco || this._c.disco;
+    createCapsNode(disco = this._c.disco) {
       const {identities} = disco;
-      const [identity={name:defaultNode}] = identities;
+      const [identity = {name: defaultNode}] = identities;
       const node = identity.name;
       const ver = SHA1.b64_sha1(this.ver(disco));
       return $build('c', {node, ver, hash: 'sha-1', xmlns: Strophe.NS.CAPS});
@@ -50,9 +49,9 @@ define(['strophe.js'], ({Strophe, $build}) => {
       features = Array.from(features || this._c.disco.features).sort();
       ['category', 'type', 'lang'].forEach(prop => identities.sort(cmpProp(prop)));
       const idstrings = identities.map(
-        ({category, type, lang, name}) => [category,type,lang,name].join('/')
+        ({category, type, lang, name}) => `${category}/${type}/${name}/${lang}`
       );
-      return idstrings.join('<') + '<' + features.map(String).join('<') + '<';
+      return (idstrings + features.map(String)).join('<') + '<';
     }
   });
 });

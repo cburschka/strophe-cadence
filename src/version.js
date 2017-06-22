@@ -8,8 +8,34 @@
 define(['strophe.js'], ({Strophe, $iq}) => {
   Strophe.addNamespace('VERSION', 'jabber:iq:version');
   Strophe.addConnectionPlugin('version', {
+    info: {
+      name: '[name]',
+      version: '[version]',
+      os: '[os]',
+    },
+
+    /**
+     * Initialize the plugin.
+     *
+     * @param conn
+     */
     init(conn) {
       this._c = conn;
+      if (this._c.disco) {
+        this._c.disco.addFeature(Strophe.NS.VERSION);
+      }
+      this.addHandler(this.responder(this.info));
+    },
+
+    /**
+     * Set version information.
+     *
+     * @param {Object} info
+     * @returns integer
+     */
+    setInfo(info) {
+      this.info = info;
+      return this.addHandler(this.responder(info));
     },
 
     /**
@@ -31,7 +57,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     /**
      * Respond to a version request.
      *
-     * @param {Stanza} request
+     * @param {Object} request
      * @param {string} name
      * @param {string} version
      * @param {string} os (optional)
@@ -44,8 +70,8 @@ define(['strophe.js'], ({Strophe, $iq}) => {
         to: request.getAttribute('from'),
         type: 'result',
       });
-      iq.c('query', {xmlns: Strophe.NS.VERSION})
-      iq.c('name', {}, name)
+      iq.c('query', {xmlns: Strophe.NS.VERSION});
+      iq.c('name', {}, name);
       iq.c('version', {}, version);
       if (os) iq.c('os', {}, os);
       this._c.sendIQ(iq);
@@ -61,7 +87,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
      *
      * @return {function} A request handler.
      */
-    responder(name, version, os) {
+    responder({name, version, os}) {
       return request => this.respond(request, name, version, os);
     },
 
@@ -73,7 +99,11 @@ define(['strophe.js'], ({Strophe, $iq}) => {
      * @return A reference to the handler that can be used to remove it.
      */
     addHandler(handler) {
-      return this._c.addHandler(handler, Strophe.NS.VERSION, 'iq', 'get');
+      if (this.handler) {
+        this._c.deleteHandler(this.handler);
+      }
+      this.handler = this._c.addHandler(handler, Strophe.NS.VERSION, 'iq', 'get');
+      return this.handler;
     }
   });
 });

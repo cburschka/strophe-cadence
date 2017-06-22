@@ -10,6 +10,10 @@ define(['strophe.js'], ({Strophe, $iq}) => {
   Strophe.addConnectionPlugin('time', {
     init(conn) {
       this._c = conn;
+      if (this._c.disco) {
+        this._c.disco.addFeature(Strophe.NS.TIME);
+      }
+      this.addHandler();
     },
 
     /**
@@ -55,9 +59,13 @@ define(['strophe.js'], ({Strophe, $iq}) => {
      *
      * @return A reference to the handler that can be used to remove it.
      */
-    addHandler(handler) {
+    addHandler(handler=null) {
+      if (this.handler) {
+        this._c.deleteHandler(this.handler);
+      }
       handler = handler || (request => this.respond(request));
-      return this._c.addHandler(handler, Strophe.NS.TIME, 'iq', 'get');
+      this.handler = this._c.addHandler(handler, Strophe.NS.TIME, 'iq', 'get');
+      return this.handler;
     }
   });
 });
