@@ -5,7 +5,7 @@
  * The disco plugin is recommended.
  */
 
-(Strophe => {
+define(['strophe.js'], ({Strophe, $build}) => {
   const cmp = (a, b) => (a != b) * (1 - 2*(a < b));
   const cmpProp = prop => (a, b) => cmp(a[prop], b[prop]);
   const defaultNode = 'https://github.com/cburschka/strophe-cadence';
@@ -55,4 +55,4 @@
       return idstrings.join('<') + '<' + features.map(String).join('<') + '<';
     }
   });
-})(Strophe);
+});
