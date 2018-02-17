@@ -1,6 +1,6 @@
 {
   "name": "strophe-cadence",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Strophe plugins used in the cadence client.",
   "main": "",
   "scripts": {
