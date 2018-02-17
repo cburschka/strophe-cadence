@@ -89,7 +89,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
      */
     read(node) {
       const decodeValue = node => {
-        const value = node.textContent;
+        const value = node && node.textContent;
         switch (node.getAttribute('type')) {
           case 'object':
             return decodeObject(node);
