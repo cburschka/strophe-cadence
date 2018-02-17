@@ -9,6 +9,10 @@ define(['strophe.js'], ({Strophe, $iq}) => {
   Strophe.addConnectionPlugin('ping', {
     init(conn) {
       this._c = conn;
+      if (this._c.disco) {
+        this._c.disco.addFeature(Strophe.NS.PING);
+      }
+      this.addHandler();
     },
 
     /**
@@ -48,7 +52,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
      *
      * @return {int} A reference to the handler that can be used to remove it.
      */
-    addHandler(handler) {
+    addHandler(handler=null) {
       handler = handler || (request => this.respond(request));
       return this._c.addHandler(handler, Strophe.NS.PING, 'iq', 'get');
     }

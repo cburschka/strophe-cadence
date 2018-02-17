@@ -9,9 +9,13 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     identities: [],
     features: [],
     items: [],
+    handlers: {},
 
     init(conn) {
       this._c = conn;
+      // Add default info/items handlers.
+      this.addInfoHandler();
+      this.addItemHandler();
     },
 
     addIdentity(category, type, name = '', lang = '') {
@@ -19,9 +23,10 @@ define(['strophe.js'], ({Strophe, $iq}) => {
       this.identities.push({category, type, name, lang});
     },
 
-    removeIdentity(_category, _type, _name, _lang) {
+    removeIdentity(category, type, name = '', lang = '') {
+      const search = `${category}/${type}/${name}/${lang}`;
       const index = this.identities.findIndex(({category, type, name, lang}) => (
-        category == _category && name == _name && type == _type && lang == _lang
+        `${category}/${type}/${name}/${lang}` === search
       ));
       if (~index) delete this.identities[index];
     },
@@ -41,7 +46,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     },
 
     removeItem(_jid) {
-      const index = this.items.findIndex(({jid}) => jid == _jid);
+      const index = this.items.findIndex(({jid}) => jid === _jid);
       if (~index) delete this.items[index];
     },
 
@@ -72,7 +77,7 @@ define(['strophe.js'], ({Strophe, $iq}) => {
 
       iq.c('query', {xmlns});
 
-      if (xmlns == Strophe.NS.DISCO_INFO) {
+      if (xmlns === Strophe.NS.DISCO_INFO) {
         this.identities.forEach(identity => iq.c('identity', identity, ''));
         this.features.forEach(feature => iq.c('feature', {'var': feature}, ''));
       }
@@ -82,13 +87,21 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     },
 
     addInfoHandler(handler) {
+      if (this.handlers.info) {
+        this._c.deleteHandler(this.handlers.info);
+      }
       handler = handler || (request => this.respond(request));
-      return this._c.addHandler(handler, Strophe.NS.DISCO_INFO, 'iq', 'get');
+      this.handlers.info = this._c.addHandler(handler, Strophe.NS.DISCO_INFO, 'iq', 'get');
+      return this.handlers.info;
     },
 
     addItemHandler(handler) {
+      if (this.handlers.items) {
+        this._c.deleteHandler(this.handlers.items);
+      }
       handler = handler || (request => this.respond(request));
-      return this._c.addHandler(handler, Strophe.NS.DISCO_ITEMS, 'iq', 'get');
+      this.handlers.items = this._c.addHandler(handler, Strophe.NS.DISCO_ITEMS, 'iq', 'get');
+      return this.handlers.items;
     }
   });
 });
