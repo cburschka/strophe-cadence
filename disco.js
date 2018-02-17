@@ -6,9 +6,9 @@
 
 define(['strophe.js'], ({Strophe, $iq}) => {
   Strophe.addConnectionPlugin('disco', {
-    identities: [],
-    features: [],
-    items: [],
+    identities: new Map(),
+    features: new Set(),
+    items: new Map(),
     handlers: {},
 
     init(conn) {
@@ -19,45 +19,40 @@ define(['strophe.js'], ({Strophe, $iq}) => {
     },
 
     addIdentity(category, type, name = '', lang = '') {
-      this.removeIdentity(category, type, name, lang);
-      this.identities.push({category, type, name, lang});
+      this.identities.set(String([category, type, name, lang]), {category, type, name, lang});
     },
 
     removeIdentity(category, type, name = '', lang = '') {
-      const search = `${category}/${type}/${name}/${lang}`;
-      const index = this.identities.findIndex(({category, type, name, lang}) => (
-        `${category}/${type}/${name}/${lang}` === search
-      ));
-      if (~index) delete this.identities[index];
+      this.identities.remove(String([category, type, name, lang]))
     },
 
-    addFeature(namespace) {
-      this.features = namespace;
+    addFeature(...namespaces) {
+      this.features = new Set([...this.features, ...namespaces]);
     },
 
-    removeFeature(namespace) {
-      const index = this.features.indexOf(namespace);
-      if (~index) delete this.features[index];
+    removeFeature(...namespaces) {
+      const remove = new Set(namespaces);
+      this.features = new Set([...this.features].filter(x => !remove.has(x)));
     },
 
-    addItem(jid, name) {
-      this.removeItem(jid);
-      this.items.push({jid, name});
+    addItem({jid, node, attributes}) {
+      attributes.jid = jid;
+      attributes.node = node;
+      this.items.set(String([jid, node]), attributes);
     },
 
-    removeItem(_jid) {
-      const index = this.items.findIndex(({jid}) => jid === _jid);
-      if (~index) delete this.items[index];
+    removeItem({jid, node}) {
+      this.items.remove(String([jid, node]));
     },
 
-    queryInfo(to, {timeout}) {
+    queryInfo(to, timeout) {
       const id = this._c.getUniqueId('disco#info');
       const iq = $iq({id, to, type: 'get'});
       iq.c('query', {xmlns: Strophe.NS.DISCO_INFO});
       return new Promise((resolve, reject) => this._c.sendIQ(iq, resolve, reject, timeout));
     },
 
-    queryItems(to, {node, timeout}) {
+    queryItems(to, node, timeout) {
       const id = this._c.getUniqueId('disco#items');
       const iq = $iq({id, to, type: 'get'});
       iq.c('query', {xmlns: Strophe.NS.DISCO_ITEMS});

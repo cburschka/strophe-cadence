@@ -34,9 +34,8 @@ define(['strophe.js'], ({Strophe, SHA1, $build}) => {
      * Create a caps element.
      */
     createCapsNode(disco = this._c.disco) {
-      const {identities} = disco;
-      const [identity = {name: defaultNode}] = identities;
-      const node = identity.name;
+      const [identity={}] = disco.identities.values();
+      const node = identity.name || defaultNode;
       const ver = SHA1.b64_sha1(this.ver(disco));
       return $build('c', {node, ver, hash: 'sha-1', xmlns: Strophe.NS.CAPS});
     },
@@ -45,8 +44,8 @@ define(['strophe.js'], ({Strophe, SHA1, $build}) => {
      * Create a version string from the identities and features.
      */
     ver({identities, features}) {
-      identities = Array.from(identities);
-      features = Array.from(features || this._c.disco.features).sort();
+      identities = Array.from(identities.values());
+      features = Array.from(features).sort();
       ['category', 'type', 'lang'].forEach(prop => identities.sort(cmpProp(prop)));
       const idstrings = identities.map(
         ({category, type, lang, name}) => `${category}/${type}/${name}/${lang}`
